@@ -8,6 +8,9 @@ app_name = "item"
 
 urlpatterns = [
     
+    path("add/", views.add, name = "add"),
+    path("<int:pk>/delete/", views.delete, name = "delete"),
+    path("<int:pk>/edit/", views.edit, name = "edit"),
     path("<int:pk>/", views.details, name = "detail")
 
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
