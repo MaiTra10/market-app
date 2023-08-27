@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Item
+from django.db.models import Q
+from .models import Item, Category
 from .forms import AddItemForm, EditItemForm
 
 # Create your views here.
@@ -15,6 +16,32 @@ def details(request, pk):
 
         "item": item,
         "related_items": related_items
+
+    })
+
+def browse(request):
+
+    query = request.GET.get("query", "")
+    category_id = request.GET.get("category", 0)
+
+    items = Item.objects.filter(is_sold = False)
+    categories = Category.objects.all()
+
+    if category_id:
+
+        items = items.filter(category_id = category_id)
+
+    if query:
+
+        items = items.filter(Q(name__icontains = query) | Q(description__icontains = query))
+
+    return render(request, "item/browse.html", {
+
+        "items": items,
+        "title": "Browse",
+        "query": query,
+        "categories": categories,
+        "category_id": int(category_id)
 
     })
 
